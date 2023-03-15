@@ -15,6 +15,16 @@ public class Test2 : MonoBehaviour
     void Update()
     {
 
+        if (Input.GetMouseButtonDown(0)) // 마우스 왼쪽 버튼 클릭
+        {
+            hp += 10;
+        }
+
+        if (Input.GetMouseButtonDown(1)) // 마우스 오른쪽 버튼 클릭
+        {
+            hp -= 10;
+        }
+
         if (hp <= 50)
         {
             Debug.Log("Run!");
