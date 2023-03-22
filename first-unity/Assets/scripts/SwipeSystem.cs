@@ -8,7 +8,6 @@ public class SwipeSystem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Swipe 방향 검사
         if (Input.GetMouseButtonDown(0)) initialPos = Input.mousePosition;
         if (Input.GetMouseButtonUp(0)) Calculate(Input.mousePosition);
 
@@ -16,6 +15,7 @@ public class SwipeSystem : MonoBehaviour
 
     void Calculate(Vector3 finalPos)
     {
+        /* Swipe 방향 검사 */
         float disX = Mathf.Abs(initialPos.x - finalPos.x);
         float disY = Mathf.Abs(initialPos.y - finalPos.y);
 
