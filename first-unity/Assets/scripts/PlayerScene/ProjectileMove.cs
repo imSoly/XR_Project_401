@@ -28,4 +28,14 @@ public class ProjectileMove : MonoBehaviour
             collision.gameObject.GetComponent<Monster>().Damaged(1);
         }
     }
+
+    // 트리거 예약 함수
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Monster")) // Tag를 검사한다.
+        {
+            Destroy(this.gameObject); // 발사체 삭제
+            other.gameObject.GetComponent<Monster>().Damaged(1);
+        }
+    }
 }
