@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Object
   - Monster
+  - GameManager
+  - Ground
   layers:
   - Default
   - TransparentFX

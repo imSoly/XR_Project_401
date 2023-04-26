@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     public GameObject PlayerPivot; // 플레이어가 바라보는 방향을 알기 위해
     public Camera viewCamera; // 메인 카메라 받아오는 Camera 오브젝트
     public Vector3 velocity; // 이동 속도값
-    public ProjetileController projetileController;
+    public ProjectileController projetileController;
 
     // Start is called before the first frame update
     void Start()
