@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems; // UI Event Control
 
 public class PlayerController : MonoBehaviour
 {
@@ -28,17 +29,22 @@ public class PlayerController : MonoBehaviour
         // 피봇이 해당 타겟을 보게 한다.
         PlayerPivot.transform.LookAt(targetPosition, Vector3.up);
 
-        // 방향키를 통해 이동
+        // 방향키를 통해 이동 벡터값 생성
         velocity = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized * moveSpeed;
 
         if(Input.GetKeyDown(KeyCode.Space))
         {
             GetComponent<Rigidbody>().AddForce(Vector3.up * 10.0f, ForceMode.Impulse);
         }
-        if (Input.GetMouseButtonDown(0))
-        {
-            projetileController.FireProjectile();
+
+        if (!EventSystem.current.IsPointerOverGameObject())
+        { // 게임 UI와 동시에 동작하지 않게 하기 위해 설정
+            if (Input.GetMouseButtonDown(0))
+            {
+                projetileController.FireProjectile();
+            }
         }
+        
     }
 
     private void FixedUpdate()
