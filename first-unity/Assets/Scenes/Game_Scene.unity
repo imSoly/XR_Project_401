@@ -488,10 +488,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5516db31f7dc2634e8dd9c6ba4bf12be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hudText: {fileID: 0}
+  hudText: {fileID: 1438701997}
   character: {fileID: 3857545712119829734}
   offset: {x: 0, y: 15, z: 0}
-  HudTextUp: {fileID: 1438701995}
+  HudTextUp: {fileID: 7084142262281144758, guid: 97a477b3699771e49951e6466b25698d, type: 3}
   canvasObject: {fileID: 630114571}
 --- !u!4 &539280591
 Transform:
@@ -832,6 +832,55 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 184783775d1ba514a852b8ed9e51baf8, type: 3}
+--- !u!1 &785568133
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 785568135}
+  - component: {fileID: 785568134}
+  m_Layer: 0
+  m_Name: FxManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &785568134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 785568133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 688aa717145025148b295208c6bd8a21, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fxList:
+  - fxType: 0
+    fxPrefab: {fileID: 100000, guid: f06e78284f831ae469c74624ab5d513b, type: 3}
+  - fxType: 1
+    fxPrefab: {fileID: 4593184484909914552, guid: 2e1e9506f5904a64b81744324fb7cd50, type: 3}
+--- !u!4 &785568135
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 785568133}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 9.837483, y: 0.49998283, z: -2.9721088}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 19
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &847104497 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7410323762258927511, guid: 59f8e0d6fa29f474ba87b6a0d1e6d7be, type: 3}
@@ -1072,8 +1121,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f13752d6845cd9240ac607dcb3307206, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  launchDirection: {x: 0, y: 0, z: 0}
-  Projectile: {fileID: 1299380706249637465, guid: 0bbaf16fcaf697c4cb9be5482b2ed118, type: 3}
 --- !u!1 &1438701995
 GameObject:
   m_ObjectHideFlags: 0
