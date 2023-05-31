@@ -85,7 +85,7 @@ public class NestScrollManager : MonoBehaviour, IBeginDragHandler, IDragHandler,
         targetPos = pos[n];
         VerticalScrollUp();
     }
-
+    
     // Update is called once per frame
     void Update()
     {
