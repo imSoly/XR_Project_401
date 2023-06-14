@@ -1,104 +1,132 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using WebSocketSharp; // C#¿¡¼­ À¥¼ÒÄÏÀ» Áö¿øÇÏ´Â ¶óÀÌºê·¯¸®
-using Newtonsoft.Json; // JSONÀ» »ç¿ëÇÏ±â À§ÇÑ ¶óÀÌºê·¯¸®
+using WebSocketSharp;               //C# ì—ì„œ ì›¹ ì†Œìº£ì„ ì§€ì›í•˜ëŠ” ë¼ì´ë¸ŒëŸ¬ë¦¬
 using System.Text;
+using Newtonsoft.Json;              //JSON ì„ ì‚¬ìš©í•˜ê¸°ìœ„í•œ ë¼ì´ë¸ŒëŸ¬ë¦¬ 
+using UnityEngine.UI;               //UIë¥¼ í†µí•´ì„œ íŒ¨í‚· ë³€ê²½
 
 public class MyData
 {
-    public string clientID; // ¼­¹ö¿¡¼­ Á¦ÀÛÇØ¼­ Å¬¶óÀÌ¾ğÆ®¿¡ Á¢¼Ó ½Ã ÁÜ
+    public string clientID;                     //ì„œë²„ì—ì„œ ì œì‘ í•´ì„œ í´ë¼ì´ì–¸íŠ¸ì— ì ‘ì†ì‹œ ì¤Œ
     public string message;
-    public int requestType; // ¿äÃ» ¹øÈ£ JSONÀ¸·Î º¸³¿
+    public int requestType;                     // ìš”ì²­ ë²ˆí˜¸ jsonë¡œ ë³´ëƒ„
 }
+
+public class InfoData                           //ì„œë²„ì—ì„œ ì œì‘í•œ íŒ¨í‚· ì„ ì–¸
+{
+    public string type;
+    public InfoParams myParams;
+}
+
+public class InfoParams                          //ì„œë²„ì—ì„œ ì œì‘í•œ íŒ¨í‚· ì„ ì–¸ (ë‚´ë¶€)
+{
+    public string room;
+    public int loopTimeCount;
+}
+
 public class SocketClient : MonoBehaviour
 {
     private WebSocket webSocket;
     private bool isConnected = false;
-    // ¿¬°á ½Ãµµ È½¼ö
-    private int connectionAttempt = 0; 
-    // ÃÖ´ë ¿¬°á ½Ãµµ È½¼ö
-    private const int maxConnectionAttempts = 3; 
+    private int connectionAttempt = 0;              // ì—°ê²° ì‹œë„ íšŸìˆ˜ 
+    private const int maxConnectionAttempts = 3;    // ìµœëŒ€ ì—°ê²° ì‹œë„ íšŸìˆ˜
 
-    MyData sendData = new MyData { message = "¸Ş¼¼Áö Àü¼Û" };
+    MyData sendData = new MyData { message = "ë©”ì„¸ì§€ ì „ì†¡" };
+
+    public Button sendButton;                           //JSON ì „ì†¡ ë²„íŠ¼
+    public Button ReconnectButton;                      //ì—°ê²°ì´ ëŠê²¼ì„ë•Œ ë‹¤ì‹œ ì—°ê²° í•˜ëŠ” ë²„íŠ¼
+    public Text typeText;                               //ë©”ì„¸ì§€ ì¢…ë¥˜ ë°ì´í„° ë°›ì•„ì™€ì„œ íŒ¨í‚·ì— ë³´ë‚´ê¸° ìœ„í•´ ì„ ì–¸
+    public Text messageText;
+    public Text uiLoopCountText;                        //ë£¨í”„ ì¹´ìš´íŠ¸ë¥¼ í™•ì¸í•˜ê¸° ìœ„í•œ UI
+
+    public int loopCount;
 
     // Start is called before the first frame update
     void Start()
     {
-        ConnectWebSocket();
+        ConnectWebSocekt();
+
+        sendButton.onClick.AddListener(() =>                        //SEND ë²„íŠ¼ì„ ëˆŒë €ì„ ë•Œ 
+        {
+            //JSON ë°ì´í„° ìƒì„±
+            sendData.requestType = int.Parse(typeText.text);        //0 ,10, 100, 200, 300 
+            sendData.message = messageText.text;
+            string jsonData = JsonConvert.SerializeObject(sendData);
+
+            webSocket.Send(jsonData);       //wectSocketìœ¼ë¡œ JSON ë°ì´í„° ì „ì†¡ 
+        });
+
+        ReconnectButton.onClick.AddListener(() =>
+        {
+            ConnectWebSocekt();
+        });
     }
 
-    void ConnectWebSocket()
+    void ConnectWebSocekt()
     {
-        // localhost 127.0.0.1 port:8000, ws => websocket
-        webSocket = new WebSocket("ws://localhost:8000");
-
-        // À¥¼ÒÄÏ °ü·Ã ÀÌº¥Æ®¸¦ ¹ß»ı½ÃÄÑ¼­ ÇÔ¼ö¸¦ ½ÇÇà½ÃÅ²´Ù.
-        webSocket.OnOpen += OnWebSocketOpen;
-        webSocket.OnMessage += OnWebSocketMessage;
-        webSocket.OnClose += OnWebSocketClose;
+        webSocket = new WebSocket("ws://localhost:8000");           //localhost 127.0.0.1 port : 8000 , ws => websocket
+        webSocket.OnOpen += OnWebSocketOpen;                        //ì›¹ ì†Œìº£ì´ ì—°ê²° ë˜ì—ˆì„ ë•Œ ì´ë²¤íŠ¸ë¥¼ ë°œìƒì‹œì¼œì„œ í•¨ìˆ˜ë¥¼ ì‹¤í–‰ ì‹œí‚¨ë‹¤. 
+        webSocket.OnMessage += OnWebSocketMessage;                  //ì›¹ ì†Œìº£ ë©”ì„¸ì§€ê°€ ì™”ì„ ë•Œ ì´ë²¤íŠ¸ë¥¼ ë°œìƒì‹œì¼œ Message í•¨ìˆ˜ë¥¼ ì‹¤í–‰ ì‹œí‚¨ë‹¤.
+        webSocket.OnClose += OnWebSocketClose;                      //ì›¹ ì†Œìº£ ì—°ê²°ì´ ëŠì–´ì¡Œì„ë•Œ ì´ë²¤íŠ¸ë¥¼ ë°œìƒì‹œì¼œ Close í•¨ìˆ˜ë¥¼ ì‹¤í–‰ ì‹œí‚¨ë‹¤. 
 
         webSocket.ConnectAsync();
     }
 
-    // À¥¼ÒÄÏÀÌ ¿ÀÇÂµÇ°í ¿¬°áµÇ¾úÀ» ¶§
-    void OnWebSocketOpen(object sender, System.EventArgs e)
+    void OnWebSocketOpen(object sender, System.EventArgs e)         //ì›¹ ì†Œìº£ì´ ì˜¤í”ˆë˜ê³  ì—°ê²° ë˜ì—ˆì„ ë•Œ 
     {
-        Debug.Log("WebSocket Connected.");
+        Debug.Log("WebSocket connected");
         isConnected = true;
         connectionAttempt = 0;
     }
 
-    // À¥¼ÒÄÏÀÌ ¿¬°áµÈ ÈÄ Message°¡ ¿ÔÀ» ¶§
-    void OnWebSocketMessage(object sender, MessageEventArgs e)
+    void OnWebSocketMessage(object sender, MessageEventArgs e)      //ì›¹ ì†Œìº£ì´ ì—°ê²°ëœí›„ Messageê°€ ì™”ì„ ë•Œ 
     {
-        // MessageEventArgs¿¡ µé¾î¿Â RowData¸¦ JSONÀ¸·Î ÀÎÄÚµù
-        string jsonData = Encoding.Default.GetString(e.RawData);
-        Debug.Log("Received JSON Data: " + jsonData);
+        string jsonData = Encoding.Default.GetString(e.RawData);    //MessageEventArgsì— ë“¤ì–´ì˜¨ RawDataë¥¼ Jsonìœ¼ë¡œ ì¸ì½”ë”© í•œë‹¤. 
+        Debug.Log("Received JSON data : " + jsonData);
 
-        // JSON µ¥ÀÌÅÍ¸¦ °´Ã¼·Î ¿ªÁ÷·ÄÈ­
-        MyData receivedData = JsonConvert.DeserializeObject<MyData>(jsonData);
+        MyData receivedData = JsonConvert.DeserializeObject<MyData>(jsonData);          //JSON ë°ì´í„°ë¥¼ ê°ì²´ë¡œ ì—­ì§ë ¬í™”
 
-        // receivedData °ªÀÌ ºñ¾îÀÖÁö ¾ÊÀ» ¶§
-        if (receivedData != null && !string.IsNullOrEmpty(receivedData.clientID))
+        InfoData infoData = JsonConvert.DeserializeObject<InfoData>(jsonData);
+
+        if (infoData != null)
         {
-            // ¼­¹ö¿¡¼­ ¹Ş¾Æ¿Â ID °ªÀ» MyData¿¡ ³Ö´Â´Ù.
-            sendData.clientID = receivedData.clientID;
+            string room = infoData.myParams.room;
+            loopCount = infoData.myParams.loopTimeCount;
         }
+
+        if (receivedData != null && !string.IsNullOrEmpty(receivedData.clientID))        //receivedData ê°’ì´ ë¹„ì–´ ìˆì§€ ì•Šì„ ë•Œ
+        {
+            sendData.clientID = receivedData.clientID;                                  //ì„œë²„ì—ì„œ ë°›ì•„ì˜¨ ID ê°’ì„ MyDataì— ë„£ëŠ”ë‹¤. 
+        }
+
     }
 
-    // À¥¼ÒÄÏ ¿¬°áÀÌ ²÷°åÀ» ¶§
-    void OnWebSocketClose(object sender, CloseEventArgs e)
+    void OnWebSocketClose(object sender, CloseEventArgs e)              //ì›¹ ì†Œìº£ ì—°ê²°ì´ ëŠê²¼ì„ Â‹Âš
     {
-        Debug.Log("WebSocket Connection Closed.");
-        // ¿¬°á ²÷±è flag
-        isConnected = false;
+        Debug.Log("WebSocket connection closed");
+        isConnected = false;                                            //ì—°ê²° ëˆê¹€ flag 
 
-        // ÃÑ 3¹øÀÇ ½Ãµµ
-        if(connectionAttempt < maxConnectionAttempts)
+        if (connectionAttempt < maxConnectionAttempts)                   //ì´ 3ë²ˆì˜ ì‹œë„ 
         {
             connectionAttempt++;
-            Debug.Log("Attempting to reconnect. Attemp: " + connectionAttempt);
-            // Ä¿³Ø¼Ç ½Ãµµ
-            ConnectWebSocket();
+            Debug.Log("Attempting to reconnect. Attempt : " + connectionAttempt);
+            ConnectWebSocekt();                                                         //Connect ì‹œë„ë¥¼ í•œë‹¤.
         }
         else
         {
-            Debug.Log("Failed to connect");
+            Debug.Log("Failed to connect ");
         }
-        
     }
 
-    // ÇÁ·Î±×·¥ Á¾·á ½Ã¿¡ È£ÃâµÇ´Â ÇÔ¼ö
-    void OnApplicationQuit()
+    void OnApplicationQuit()                        //í”„ë¡œê·¸ë¨ ì¢…ë£Œì‹œì— í˜¸ì¶œ ë˜ëŠ” í•¨ìˆ˜ 
     {
-        DisConnectedSockedt();
+        DisconnectWebSocket();
     }
 
-    // ¿¬°áµÈ socketÀ» Release ÇØÁØ´Ù.
-    void DisConnectedSockedt()
+    void DisconnectWebSocket()                      //ì—°ê²°ëœ socketë¥¼ Relese í•´ì¤€ë‹¤. 
     {
-        if(webSocket != null && isConnected)
+        if (webSocket != null && isConnected)
         {
             webSocket.Close();
             isConnected = false;
@@ -108,18 +136,20 @@ public class SocketClient : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(webSocket == null || !isConnected)
+        if (webSocket == null || !isConnected)
         {
             return;
         }
 
+        uiLoopCountText.text = "LoopCount : " + loopCount.ToString();
+
         if (Input.GetKeyDown(KeyCode.Space))
         {
             sendData.requestType = 0;
-            // MyData¸¦ JSONÈ­
-            string jsonData = JsonConvert.SerializeObject(sendData);
+            string jsonData = JsonConvert.SerializeObject(sendData);                //Mydata ë¥¼ Json ìœ¼ë¡œ ë§Œë“¤ì–´ì¤Œ 
 
             webSocket.Send(jsonData);
+
         }
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerHp : MonoBehaviour
 {
     public int Hp = 5;
+
     public void Damaged(int Damage)
     {
         Hp -= Damage;
